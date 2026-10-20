@@ -44,6 +44,11 @@ Skill scripts receive a short-lived, narrowed token per invocation, never a long
 
 ## Human approval
 
+The following controls are the secured target, not the static-credential resource baseline.
+Document deletion uses owner approval followed by separate execution by an authenticated Architect
+human. Agent tokens cannot delete, even with approval. Execution must match the approved document
+and content version; changed content requires new approval.
+
 Configurable, so teams can see the control on and off.
 
 - **Mode:** off, always, or conditional.
@@ -75,3 +80,14 @@ For PoC, the audit trail is a local directory in JSON. one file per component, m
 - The orchestrator periodically records each file’s latest hash in a separate anchor file, which catches tail truncation.
 - A `verify` command reports the first broken link.
 
+
+## Resource baseline
+
+One PostgreSQL instance hosts three databases: Docs MCP owns application access to `docs_db`,
+Requests MCP to `requests_db`, and Service API to `service_db`. Bootstrap owns all tables;
+application roles have only their own database CONNECT and table DML grants, with no DDL.
+Requests has a local tenant catalog. Ticket document references are historical IDs.
+Service MCP is independently packaged under the backend team, authenticates callers with its
+own bearer token, and calls Service API using a separate configured token. It has no DB credentials.
+Desired features and applied configuration both live in `service_db`; reload atomically replaces
+one tenant's applied state. Deletion affects only applied state; absence means disabled.

@@ -9,7 +9,7 @@ We define Users, Agents, Resources, permission model and workflow
 | --- | --- |
 | Documentation tool | MCP server |
 | Support request tool | MCP server |
-| Postgres database | MCP server and psql CLI |
+| Service | Service API through Service MCP |
 | Backend service | REST API |
 
 ### Agents
@@ -26,7 +26,7 @@ We define Users, Agents, Resources, permission model and workflow
 | User | Docs | Requests | DB | Backend | Delete |
 | --- | --- | --- | --- | --- | --- |
 | Junior 1 | Read | Read | Read | Read | No |
-| Junior 2 | Read, write on owned objects | Read | Read | Read | No |
+| Junior 2 | Read, write on owned objects | Read, write on owned objects | Read | Read | No |
 | Senior | Read/write | Read/write | Read/write | Read/write | No |
 | Architect | Read/write | Read/write | Read/write | Read/write | Yes |
 
@@ -41,9 +41,9 @@ We define Users, Agents, Resources, permission model and workflow
 
 **Junior 2 ownership model:** each doc and request has an `owner` (or `created_by`) field. Junior 2 can write only to objects they own. Test data marks a few objects as owned by Junior 2 and the rest by others.
 
-**Database:** per-user DB roles or Row-Level Security instead of a shared credential, so the MCP server and the psql CLI use the same roles and neither can bypass the other. Agent environments hold no superuser credentials and DB roles lack DELETE and DDL privileges.
+**Database:** per-user DB roles or Row-Level Security instead of a shared credential, for database-backed services and manual access. Service MCP reaches tenant state only through Service API and holds no database credentials. Agent environments hold no superuser credentials; baseline service roles cannot perform DDL.
 
-**Deletes:** not exposed as agent tools. Also blocked in the resource layer (REST rejects delete for agent tokens, DB roles lack the privilege), so the rule holds even if an agent is compromised.
+**Deletes (secured target):** resource interfaces include document deletion and deletion of applied backend configuration, but agent tokens cannot invoke them. Do not expose delete operations in agent toolsets; resource authorization must also reject agent tokens. Service MCP has no database credentials. A document owner may approve deletion for separate execution by an authenticated Architect human; approval never grants an agent delete rights and binds the exact document/content version. The resource-first baseline uses static service credentials and does not implement this authorization or approval gate yet.
 
 ## Workflow
 
@@ -62,11 +62,11 @@ The Resolver fix is denied, the denial returns to the orchestrator, and the debu
 
 ### W3: Documentation only
 
-The user asks the Documentation agent to edit a doc. Junior 1 is denied, Junior 2 is allowed only on owned docs, Senior and Architect are allowed. A delete request is denied for everyone, Architect included. Shows T6 and T7.
+The user asks the Documentation agent to edit a doc. Junior 1 is denied, Junior 2 is allowed only on owned docs, Senior and Architect are allowed. An agent delete request is denied for everyone, Architect included. Shows T6 and T7.
 
 ### W4: Cross-agent attack (poisoned doc)
 
-A doc read in step 1 contains hidden instructions to steer the router to Resolver, or to delete a record. Junior 1 and Junior 2 writes are denied by user cap. For Senior and Architect an in-scope write may succeed, which is the residual risk, and the audit log and approval gate address it. Any delete attempt is denied for everyone. Shows T2, T3, T4, T6.
+A doc read in step 1 contains hidden instructions to steer the router to Resolver, or to delete a record. Junior 1 and Junior 2 writes are denied by user cap. For Senior and Architect an in-scope write may succeed, which is the residual risk, and the audit log and approval gate address it. Any agent delete attempt is denied for everyone. Shows T2, T3, T4, T6.
 
 Run twice with the gate on: first without provenance shown (the owner approves and the attack lands), then with provenance shown (the warning makes the manipulation visible and the owner denies).
 

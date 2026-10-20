@@ -11,7 +11,7 @@ Here is the list of all considered threats and the mitigation plan for each. Thi
 | T3 | Routing manipulation | Allowlist, state preconditions, hop and budget limits, router output treated as untrusted |
 | T4 | Scope escalation at handoff | Scope ceilings, intersection with user cap, re-exchange per hop, no token forwarding |
 | T5 | DB bypass (shared credential, psql CLI) | Per-user roles or RLS, no superuser credentials in agent environments |
-| T6 | Delete via alternate path | No delete tools, DB roles without DELETE or DDL, REST rejects delete for agent tokens |
+| T6 | Delete via alternate path | No agent delete tools, database roles without DDL, resource deletion rejects agent tokens; approved document deletion uses a separate authenticated Architect human path |
 
 ## High (P1)
 

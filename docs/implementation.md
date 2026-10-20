@@ -29,8 +29,9 @@ One monorepo with ownership boundaries and separate deployables. In a real envir
 | Security/platform team | Orchestrator, router policy, token broker, authz library, audit library, Keycloak configuration, handoff allowlist |
 | Documentation team | Docs MCP server and Documentation agent |
 | Support tooling team | Requests MCP server and Support agent |
-| DB/platform team | DB MCP server, Postgres roles and RLS |
-| Backend team | Backend REST API |
+| DB/platform team | Postgres roles and RLS |
+| Backend team | Service API and Service MCP |
+| Backend team | Service API |
 | SRE or platform team | Debug and Resolver agents, which span all resources |
 
 ### Layout
@@ -46,8 +47,8 @@ multi-agent-security-workflow/
 ├── teams/
 │   ├── docs/                  docs_mcp/ + agent/ + agent.manifest.yaml
 │   ├── support/               requests_mcp/ + agent/ + agent.manifest.yaml
-│   ├── db/                    db_mcp/ + postgres init SQL
-│   ├── backend/               backend_api/
+│   ├── db/                    postgres init SQL
+│   ├── backend/               service_api/ + service_mcp/
 │   └── sre/                   debug_agent/ + resolver_agent/ + manifests
 ├── conformance/               shared negative-test suite run in each team’s CI
 ├── data/seed/                 synthetic docs, requests, tables with owner fields
@@ -72,10 +73,19 @@ schema is decided
 
 | Phase | Build | Demo milestone |
 | --- | --- | --- |
-| Resource | Docs MCP, Requests MCP, DB MCP plus psql path, backend REST API, seed data with owner fields | Resources work as they do today (simple credentials) |
+| Resource | Docs MCP, Requests MCP, Service MCP wrapping Service API, Service API, seed data with owner fields | Resources work as they do today (simple credentials) |
 | Agents | The four agents wired directly to resources and to each other | The problems: agents hold standing credentials (T2), no user identity reaches resources, handoffs are uncontrolled, nothing is logged centrally |
 | IdP | Shared authz and audit libraries, resource retrofits | Resources validate tokens, scope, ownership, and delete-blocking, and emit audit events |
 | Orchestrator | Router, policy engine, token broker, approval gate, hash-chained audit | W1 to W5 run end to end with controls on |
 | Hardening and tests | Vulnerable-mode toggles, T1 to T16 exploit and mitigation tests, conformance suite | Full-attacker demo |
 | Observability | Langfuse, Prometheus, Grafana | |
 
+
+## Resource milestone status
+
+The resource foundation is implemented. See [resource plan](plans/resource.md) and
+[runbook](resources.md). This baseline uses static service credentials and independent PostgreSQL
+roles. Docs MCP exposes deletion and Service API exposes applied-configuration deletion; agent-token
+denial and the separate approved human document-deletion path arrive in later phases.
+Resource CI selects deployable image smoke builds by changed path and runs the complete Compose
+integration suite when resource code or its shared test/runtime configuration changes.

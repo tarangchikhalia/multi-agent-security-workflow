@@ -29,4 +29,19 @@ See threat model here - [Threat Model](./docs/threat-model.md)
 
 ## Implementation details
 
-See implementation details here - [Implementation details](./docs/implementation)
+See implementation details here - [Implementation details](./docs/implementation.md)
+
+## Run the resource foundation
+
+The four resources are implemented with Docker Compose and synthetic tenant data.
+See [setup, interfaces, walkthroughs, and tests](./docs/resources.md) and the
+[implementation plan](./docs/plans/resource.md). Static credentials are the current baseline;
+identity enforcement and human approval are later milestones.
+
+```sh
+cp .env.example .env
+uv sync --frozen
+docker compose up --build -d --wait
+uv run python -m scripts.fixtures seed
+uv run python -m scripts.walkthrough --deletes
+```

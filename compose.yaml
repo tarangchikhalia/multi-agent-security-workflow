@@ -1,0 +1,85 @@
+name: resource-lab
+services:
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: bootstrap
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?copy .env.example to .env}
+      DOCS_DB_PASSWORD: ${DOCS_DB_PASSWORD:?required}
+      REQUESTS_DB_PASSWORD: ${REQUESTS_DB_PASSWORD:?required}
+      SERVICE_DB_PASSWORD: ${SERVICE_DB_PASSWORD:?required}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - resource-three-db-data:/var/lib/postgresql/data
+      - ./teams/db/postgres/001-init.sh:/docker-entrypoint-initdb.d/001-init.sh:ro
+      - ./teams/db/postgres:/schema:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bootstrap -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  docs_tool:
+    build: ./teams/docs/docs_mcp
+    environment:
+      PGHOST: postgres
+      PGDATABASE: docs_db
+      PGUSER: docs_resource
+      PGPASSWORD: ${DOCS_DB_PASSWORD:?required}
+      DATABASE_URL: "dbname=docs_db"
+      SERVICE_TOKEN: ${DOCS_TOKEN:?required}
+    ports: ["127.0.0.1:${DOCS_PORT:-8001}:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
+  requests_tool:
+    build: ./teams/support/requests_mcp
+    environment:
+      PGHOST: postgres
+      PGDATABASE: requests_db
+      PGUSER: requests_resource
+      PGPASSWORD: ${REQUESTS_DB_PASSWORD:?required}
+      DATABASE_URL: "dbname=requests_db"
+      SERVICE_TOKEN: ${REQUESTS_TOKEN:?required}
+    ports: ["127.0.0.1:${REQUESTS_PORT:-8002}:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
+  service_mcp:
+    build: ./teams/backend/service_mcp
+    environment:
+      SERVICE_API_URL: http://service_api:8000
+      SERVICE_API_TOKEN: ${SERVICE_API_TOKEN:?required}
+      SERVICE_TOKEN: ${SERVICE_MCP_TOKEN:?required}
+    ports: ["127.0.0.1:${SERVICE_MCP_PORT:-8003}:8000"]
+    depends_on:
+      service_api: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
+  service_api:
+    build: ./teams/backend/service_api
+    environment:
+      PGHOST: postgres
+      PGDATABASE: service_db
+      PGUSER: service_resource
+      PGPASSWORD: ${SERVICE_DB_PASSWORD:?required}
+      DATABASE_URL: "dbname=service_db"
+      SERVICE_TOKEN: ${SERVICE_API_TOKEN:?required}
+    ports: ["127.0.0.1:${SERVICE_API_PORT:-8004}:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
+volumes:
+  resource-three-db-data:
