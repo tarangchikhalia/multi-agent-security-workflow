@@ -68,4 +68,14 @@ multi-agent-security-workflow/
 This workflow PoC is implemented in Python 3.14. In real scenario, this architecture is language agnostic. The agents can be built in any language as long as the agent-to-orchestrator communication protocol and
 schema is decided
 
+## Build order
+
+| Phase | Build | Demo milestone |
+| --- | --- | --- |
+| Resource | Docs MCP, Requests MCP, DB MCP plus psql path, backend REST API, seed data with owner fields | Resources work as they do today (simple credentials) |
+| Agents | The four agents wired directly to resources and to each other | The problems: agents hold standing credentials (T2), no user identity reaches resources, handoffs are uncontrolled, nothing is logged centrally |
+| IdP | Shared authz and audit libraries, resource retrofits | Resources validate tokens, scope, ownership, and delete-blocking, and emit audit events |
+| Orchestrator | Router, policy engine, token broker, approval gate, hash-chained audit | W1 to W5 run end to end with controls on |
+| Hardening and tests | Vulnerable-mode toggles, T1 to T16 exploit and mitigation tests, conformance suite | Full-attacker demo |
+| Observability | Langfuse, Prometheus, Grafana | |
 
