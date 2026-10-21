@@ -7,6 +7,7 @@ from urllib.parse import quote
 import httpx
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server.transport_security import TransportSecuritySettings
 from pydantic import StrictBool
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -48,7 +49,15 @@ def create_app() -> ASGIApp:
     for name in ("SERVICE_API_URL", "SERVICE_API_TOKEN"):
         if not os.environ.get(name, "").strip():
             raise RuntimeError(f"{name} must be configured")
-    mcp = FastMCP("Service MCP", stateless_http=True, json_response=True)
+    mcp = FastMCP(
+        "Service MCP",
+        stateless_http=True,
+        json_response=True,
+        transport_security=TransportSecuritySettings(
+            allowed_hosts=["127.0.0.1:*", "localhost:*", "[::1]:*", "service_mcp:8000"],
+            allowed_origins=["http://127.0.0.1:*", "http://localhost:*", "http://[::1]:*"],
+        ),
+    )
 
     @mcp.tool()
     def list_tenants(limit: int = 50) -> list[dict[str, Any]]:

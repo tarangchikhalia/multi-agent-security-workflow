@@ -47,7 +47,7 @@ multi-agent-security-workflow/
 ├── agents/                    independently packaged agents and manifests
 │   ├── support_agent/         Google ADK support agent (implemented)
 │   ├── documentation_agent/   planned
-│   ├── debug_agent/           planned
+│   ├── debug_agent/           Google ADK read-only diagnostic agent (implemented)
 │   └── resolver_agent/        planned
 ├── teams/                     resource implementations
 │   ├── docs/                  docs_mcp/

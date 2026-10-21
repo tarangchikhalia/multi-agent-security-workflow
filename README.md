@@ -52,3 +52,8 @@ Set `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env`, then run
 `docker compose --profile agents up --build -d --wait support_agent`.
 The Google ADK + LiteLLM agent listens at `http://127.0.0.1:8010`.
 See the [Support agent runbook](agents/support_agent/README.md) for invocation and limits.
+
+The [Debug agent](agents/debug_agent/README.md) reads tickets, guides, and desired/applied
+service settings. Start it with
+`docker compose --profile agents up --build -d --wait debug_agent`; it listens at
+`http://127.0.0.1:8011` and uses the same model settings from `.env`.

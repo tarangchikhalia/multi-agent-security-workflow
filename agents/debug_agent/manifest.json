@@ -1,0 +1,8 @@
+{
+  "id": "debug",
+  "runtime": "google-adk-litellm-openai",
+  "capabilities": ["docs:read", "requests:read", "service_mcp:read", "service_api:get"],
+  "tools": ["list_documents", "get_document", "list_requests", "get_request", "list_tenants", "get_features", "get_configuration", "get_applied_configuration"],
+  "handoffs": [],
+  "note": "Descriptive only; does not grant authority. Peer handoffs are not implemented."
+}

@@ -60,9 +60,15 @@ def test_missing_service_token_prevents_startup(package, monkeypatch):
 
 @pytest.mark.parametrize(
     ("package", "hostname"),
-    [("docs_mcp", "docs_tool:8000"), ("requests_mcp", "requests_tool:8000")],
+    [
+        ("docs_mcp", "docs_tool:8000"),
+        ("requests_mcp", "requests_tool:8000"),
+        ("service_mcp", "service_mcp:8000"),
+    ],
 )
 def test_mcp_allows_compose_host_and_rejects_other_hosts(package, hostname, monkeypatch):
+    monkeypatch.setenv("SERVICE_API_URL", "http://service_api:8000")
+    monkeypatch.setenv("SERVICE_API_TOKEN", "test-api-token")
     monkeypatch.setenv("SERVICE_TOKEN", "test-service-token")
     module = import_module(f"{package}.app")
     with TestClient(module.create_app()) as client:

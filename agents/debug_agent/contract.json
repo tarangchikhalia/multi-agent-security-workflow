@@ -1,0 +1,108 @@
+{
+  "request": {
+    "additionalProperties": false,
+    "properties": {
+      "version": {
+        "const": "1",
+        "default": "1",
+        "title": "Version",
+        "type": "string"
+      },
+      "task": {
+        "maxLength": 20000,
+        "minLength": 1,
+        "pattern": "\\S",
+        "title": "Task",
+        "type": "string"
+      },
+      "context": {
+        "default": "",
+        "maxLength": 20000,
+        "title": "Context",
+        "type": "string"
+      },
+      "run_id": {
+        "maxLength": 100,
+        "minLength": 1,
+        "title": "Run Id",
+        "type": "string"
+      },
+      "max_model_calls": {
+        "default": 12,
+        "maximum": 12,
+        "minimum": 1,
+        "title": "Max Model Calls",
+        "type": "integer"
+      },
+      "timeout_seconds": {
+        "default": 180,
+        "maximum": 180,
+        "minimum": 1,
+        "title": "Timeout Seconds",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "task"
+    ],
+    "title": "Invocation",
+    "type": "object"
+  },
+  "response": {
+    "properties": {
+      "version": {
+        "const": "1",
+        "default": "1",
+        "title": "Version",
+        "type": "string"
+      },
+      "run_id": {
+        "title": "Run Id",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "completed",
+          "failed"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "summary": {
+        "title": "Summary",
+        "type": "string"
+      },
+      "findings": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Findings",
+        "type": "array"
+      },
+      "errors": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Errors",
+        "type": "array"
+      },
+      "trace": {
+        "items": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "title": "Trace",
+        "type": "array"
+      }
+    },
+    "required": [
+      "run_id",
+      "status",
+      "summary"
+    ],
+    "title": "Result",
+    "type": "object"
+  }
+}

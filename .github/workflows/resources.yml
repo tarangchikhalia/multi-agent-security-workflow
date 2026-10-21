@@ -24,7 +24,7 @@ jobs:
           import json, os, subprocess
           services = {"docs_tool": "teams/docs/docs_mcp", "requests_tool": "teams/support/requests_mcp",
                       "service_mcp": "teams/backend/service_mcp", "service_api": "teams/backend/service_api",
-                      "support_agent": "agents/support_agent"}
+                      "support_agent": "agents/support_agent", "debug_agent": "agents/debug_agent"}
           base = os.environ.get("BASE", "")
           if not base or set(base) == {"0"}:
               selected = list(services)
@@ -55,6 +55,7 @@ jobs:
             service_mcp) package=service_mcp ;;
             service_api) package=service_api ;;
             support_agent) package=support_agent ;;
+            debug_agent) package=debug_agent ;;
           esac
           docker compose run --rm --no-deps "$SERVICE" /app/.venv/bin/python -c "import ${package}.app"
   integration:
