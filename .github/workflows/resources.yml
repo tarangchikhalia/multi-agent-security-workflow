@@ -1,9 +1,9 @@
 name: Resource foundation
 on:
   push:
-    paths: ["teams/**", "data/**", "scripts/**", "tests/**", "conftest.py", "compose.yaml", ".env.example", "pyproject.toml", "uv.lock", ".python-version", ".github/workflows/resources.yml"]
+    paths: ["teams/**", "agents/**", "data/**", "scripts/**", "tests/**", "conftest.py", "compose.yaml", ".env.example", "pyproject.toml", "uv.lock", ".python-version", ".github/workflows/resources.yml"]
   pull_request:
-    paths: ["teams/**", "data/**", "scripts/**", "tests/**", "conftest.py", "compose.yaml", ".env.example", "pyproject.toml", "uv.lock", ".python-version", ".github/workflows/resources.yml"]
+    paths: ["teams/**", "agents/**", "data/**", "scripts/**", "tests/**", "conftest.py", "compose.yaml", ".env.example", "pyproject.toml", "uv.lock", ".python-version", ".github/workflows/resources.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,8 +22,9 @@ jobs:
         shell: python
         run: |
           import json, os, subprocess
-          services = {"docs": "teams/docs/docs_mcp", "requests": "teams/support/requests_mcp",
-                      "service_mcp": "teams/backend/service_mcp", "service_api": "teams/backend/service_api"}
+          services = {"docs_tool": "teams/docs/docs_mcp", "requests_tool": "teams/support/requests_mcp",
+                      "service_mcp": "teams/backend/service_mcp", "service_api": "teams/backend/service_api",
+                      "support_agent": "agents/support_agent"}
           base = os.environ.get("BASE", "")
           if not base or set(base) == {"0"}:
               selected = list(services)
@@ -49,10 +50,11 @@ jobs:
           cp .env.example .env
           docker compose build "$SERVICE"
           case "$SERVICE" in
-            docs) package=docs_mcp ;;
-            requests) package=requests_mcp ;;
+            docs_tool) package=docs_mcp ;;
+            requests_tool) package=requests_mcp ;;
             service_mcp) package=service_mcp ;;
             service_api) package=service_api ;;
+            support_agent) package=support_agent ;;
           esac
           docker compose run --rm --no-deps "$SERVICE" /app/.venv/bin/python -c "import ${package}.app"
   integration:

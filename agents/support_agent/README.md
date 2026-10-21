@@ -36,9 +36,9 @@ and standing resource tokens; keep it on localhost with synthetic data. Instruct
 treat resource text as untrusted do not implement the planned identity or policy controls.
 
 ```sh
-uv run pytest teams/support/support_agent/tests -q
+uv run pytest agents/support_agent/tests -q
 # Read-only scripted-model checks against running resource HTTP endpoints:
-uv run pytest teams/support/support_agent/tests/test_resources.py --integration -q
+uv run pytest agents/support_agent/tests/test_resources.py --integration -q
 ```
 
 Offline tests use scripted model responses with the real ADK runner. The integration

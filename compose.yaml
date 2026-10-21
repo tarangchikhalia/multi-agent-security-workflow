@@ -83,7 +83,7 @@ services:
     tmpfs: ["/tmp"]
   support_agent:
     profiles: ["agents"]
-    build: ./teams/support/support_agent
+    build: ./agents/support_agent
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-}

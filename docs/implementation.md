@@ -44,12 +44,16 @@ multi-agent-security-workflow/
 │   ├── libs/                  authz, audit, broker (versioned packages)
 │   ├── policy/                handoff allowlist, scope ceilings, approval-gate config
 │   └── keycloak/              realm export: clients, roles, scope mappings
-├── teams/
-│   ├── docs/                  docs_mcp/ + agent/ + agent.manifest.yaml
-│   ├── support/               requests_mcp/ + agent/ + agent.manifest.yaml
+├── agents/                    independently packaged agents and manifests
+│   ├── support_agent/         Google ADK support agent (implemented)
+│   ├── documentation_agent/   planned
+│   ├── debug_agent/           planned
+│   └── resolver_agent/        planned
+├── teams/                     resource implementations
+│   ├── docs/                  docs_mcp/
+│   ├── support/               requests_mcp/
 │   ├── db/                    postgres init SQL
-│   ├── backend/               service_api/ + service_mcp/
-│   └── sre/                   debug_agent/ + resolver_agent/ + manifests
+│   └── backend/               service_api/ + service_mcp/
 ├── conformance/               shared negative-test suite run in each team’s CI
 ├── data/seed/                 synthetic docs, requests, tables with owner fields
 ├── scenarios/                 W1 to W5, attack payloads

@@ -17,8 +17,8 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "teams"]
-pythonpath = [".", "teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "teams/support/support_agent/src"]
+testpaths = ["tests", "teams", "agents"]
+pythonpath = [".", "teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "agents/support_agent/src"]
 markers = ["integration: requires the Compose resource stack"]
 
 [tool.ruff]
@@ -33,5 +33,5 @@ pythonVersion = "3.14"
 typeCheckingMode = "standard"
 venvPath = "."
 venv = ".venv"
-include = ["teams", "scripts", "tests", "conftest.py"]
-extraPaths = ["teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "teams/support/support_agent/src"]
+include = ["teams", "agents", "scripts", "tests", "conftest.py"]
+extraPaths = ["teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "agents/support_agent/src"]
