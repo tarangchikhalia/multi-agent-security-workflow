@@ -81,5 +81,24 @@ services:
     cap_drop: ["ALL"]
     read_only: true
     tmpfs: ["/tmp"]
+  support_agent:
+    profiles: ["agents"]
+    build: ./teams/support/support_agent
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      DOCS_MCP_URL: http://docs_tool:8000/mcp
+      DOCS_TOKEN: ${DOCS_TOKEN:?required}
+      REQUESTS_MCP_URL: http://requests_tool:8000/mcp
+      REQUESTS_TOKEN: ${REQUESTS_TOKEN:?required}
+      ADK_CAPTURE_MESSAGE_CONTENT_IN_SPANS: "false"
+    ports: ["127.0.0.1:${SUPPORT_AGENT_PORT:-8010}:8000"]
+    depends_on:
+      docs_tool: {condition: service_healthy}
+      requests_tool: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
 volumes:
   resource-three-db-data:

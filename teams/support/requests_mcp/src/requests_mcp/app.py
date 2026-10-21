@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server.transport_security import TransportSecuritySettings
 from pydantic import Field
 from starlette.concurrency import run_in_threadpool
 from starlette.requests import Request
@@ -34,7 +35,15 @@ def read_ticket(db: Any, request_id: str) -> dict[str, Any]:
 
 
 def create_app() -> ASGIApp:
-    mcp = FastMCP("Support requests", stateless_http=True, json_response=True)
+    mcp = FastMCP(
+        "Support requests",
+        stateless_http=True,
+        json_response=True,
+        transport_security=TransportSecuritySettings(
+            allowed_hosts=["127.0.0.1:*", "localhost:*", "[::1]:*", "requests_tool:8000"],
+            allowed_origins=["http://127.0.0.1:*", "http://localhost:*", "http://[::1]:*"],
+        ),
+    )
 
     @mcp.tool()
     def list_requests(

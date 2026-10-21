@@ -1,0 +1,8 @@
+{
+  "id": "support",
+  "runtime": "google-adk-litellm-openai",
+  "capabilities": ["docs:read", "requests:read", "requests:write"],
+  "tools": ["list_documents", "get_document", "list_requests", "get_request", "create_request", "update_request", "append_note"],
+  "handoffs": [],
+  "note": "Descriptive only; does not grant authority. Peer agents are not deployed."
+}

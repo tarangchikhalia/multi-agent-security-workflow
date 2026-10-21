@@ -56,3 +56,31 @@ def test_missing_service_token_prevents_startup(package, monkeypatch):
     with pytest.raises(RuntimeError, match="SERVICE_TOKEN"):
         with TestClient(module.create_app()):
             pass
+
+
+@pytest.mark.parametrize(
+    ("package", "hostname"),
+    [("docs_mcp", "docs_tool:8000"), ("requests_mcp", "requests_tool:8000")],
+)
+def test_mcp_allows_compose_host_and_rejects_other_hosts(package, hostname, monkeypatch):
+    monkeypatch.setenv("SERVICE_TOKEN", "test-service-token")
+    module = import_module(f"{package}.app")
+    with TestClient(module.create_app()) as client:
+        headers = {
+            "Authorization": "Bearer test-service-token",
+            "Accept": "application/json, text/event-stream",
+            "Host": hostname,
+        }
+        payload = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {"name": "test", "version": "1"},
+            },
+        }
+        assert client.post("/mcp", headers=headers, json=payload).status_code == 200
+        headers["Host"] = "untrusted.example:8000"
+        assert client.post("/mcp", headers=headers, json=payload).status_code == 421

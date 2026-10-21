@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
+from mcp.server.transport_security import TransportSecuritySettings
 from pydantic import Field
 from starlette.concurrency import run_in_threadpool
 from starlette.requests import Request
@@ -21,7 +22,15 @@ Limit = Annotated[int, Field(ge=1, le=100)]
 
 
 def create_app() -> ASGIApp:
-    mcp = FastMCP("Documentation", stateless_http=True, json_response=True)
+    mcp = FastMCP(
+        "Documentation",
+        stateless_http=True,
+        json_response=True,
+        transport_security=TransportSecuritySettings(
+            allowed_hosts=["127.0.0.1:*", "localhost:*", "[::1]:*", "docs_tool:8000"],
+            allowed_origins=["http://127.0.0.1:*", "http://localhost:*", "http://[::1]:*"],
+        ),
+    )
 
     @mcp.tool()
     def list_documents(

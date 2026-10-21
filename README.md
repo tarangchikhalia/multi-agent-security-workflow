@@ -45,3 +45,10 @@ docker compose up --build -d --wait
 uv run python -m scripts.fixtures seed
 uv run python -m scripts.walkthrough --deletes
 ```
+
+## Run the Support agent
+
+Set `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env`, then run
+`docker compose --profile agents up --build -d --wait support_agent`.
+The Google ADK + LiteLLM agent listens at `http://127.0.0.1:8010`.
+See the [Support agent runbook](teams/support/support_agent/README.md) for invocation and limits.
