@@ -150,5 +150,20 @@ services:
     cap_drop: ["ALL"]
     read_only: true
     tmpfs: ["/tmp"]
+  documentation_agent:
+    profiles: ["agents"]
+    build: ./agents/documentation_agent
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      DOCS_MCP_URL: http://docs_tool:8000/mcp
+      DOCS_TOKEN: ${DOCS_TOKEN:?required}
+    ports: ["127.0.0.1:${DOCUMENTATION_AGENT_PORT:-8013}:8000"]
+    depends_on:
+      docs_tool: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
 volumes:
   resource-three-db-data:

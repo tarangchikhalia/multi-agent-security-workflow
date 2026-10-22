@@ -1,0 +1,16 @@
+{
+  "id": "documentation",
+  "runtime": "python-skill-runner-openai-responses",
+  "capabilities": [
+    "docs:read",
+    "docs:write"
+  ],
+  "tools": [
+    "list_documents",
+    "get_document",
+    "create_document",
+    "update_document"
+  ],
+  "handoffs": [],
+  "note": "Descriptive only; does not grant authority. Peer handoffs are not implemented."
+}

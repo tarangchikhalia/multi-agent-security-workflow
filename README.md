@@ -57,3 +57,8 @@ The [Debug agent](agents/debug_agent/README.md) reads tickets, guides, and desir
 service settings. Start it with
 `docker compose --profile agents up --build -d --wait debug_agent`; it listens at
 `http://127.0.0.1:8011` and uses the same model settings from `.env`.
+
+The [Documentation agent](agents/documentation_agent/README.md) uses a Python skill
+runner and OpenAI Responses to edit Docs through typed tools. Start it with
+`docker compose --profile agents up --build -d --wait documentation_agent`; it listens
+at `http://127.0.0.1:8013` with the same model settings and Docs credentials only.
