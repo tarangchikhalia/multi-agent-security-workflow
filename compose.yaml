@@ -125,5 +125,30 @@ services:
     cap_drop: ["ALL"]
     read_only: true
     tmpfs: ["/tmp"]
+  resolver_agent:
+    profiles: ["agents"]
+    build: ./agents/resolver_agent
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      DOCS_MCP_URL: http://docs_tool:8000/mcp
+      DOCS_TOKEN: ${DOCS_TOKEN:?required}
+      REQUESTS_MCP_URL: http://requests_tool:8000/mcp
+      REQUESTS_TOKEN: ${REQUESTS_TOKEN:?required}
+      SERVICE_MCP_URL: http://service_mcp:8000/mcp
+      SERVICE_MCP_TOKEN: ${SERVICE_MCP_TOKEN:?required}
+      SERVICE_API_URL: http://service_api:8000
+      SERVICE_API_TOKEN: ${SERVICE_API_TOKEN:?required}
+      ADK_CAPTURE_MESSAGE_CONTENT_IN_SPANS: "false"
+    ports: ["127.0.0.1:${RESOLVER_AGENT_PORT:-8012}:8000"]
+    depends_on:
+      docs_tool: {condition: service_healthy}
+      requests_tool: {condition: service_healthy}
+      service_mcp: {condition: service_healthy}
+      service_api: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs: ["/tmp"]
 volumes:
   resource-three-db-data:

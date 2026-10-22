@@ -1,0 +1,37 @@
+{
+  "id": "resolver",
+  "runtime": "google-adk-litellm-openai",
+  "capabilities": [
+    "docs:read",
+    "docs:write",
+    "requests:read",
+    "requests:write",
+    "service_mcp:read",
+    "service_mcp:write",
+    "service_api:get",
+    "service_api:patch",
+    "service_api:post"
+  ],
+  "tools": [
+    "list_documents",
+    "get_document",
+    "create_document",
+    "update_document",
+    "list_requests",
+    "get_request",
+    "create_request",
+    "update_request",
+    "append_note",
+    "list_tenants",
+    "get_features",
+    "get_configuration",
+    "update_feature",
+    "reload_configuration",
+    "get_applied_configuration",
+    "get_desired_features",
+    "patch_feature",
+    "reload_applied_configuration"
+  ],
+  "handoffs": [],
+  "note": "Descriptive only; does not grant authority. Peer handoffs are not implemented."
+}

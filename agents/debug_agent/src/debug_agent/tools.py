@@ -8,7 +8,7 @@ import httpx
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
-MCP_READ_TOOLS = {
+ALLOWED_MCP_TOOLS = {
     "docs": {"list_documents", "get_document"},
     "requests": {"list_requests", "get_request"},
     "service_mcp": {"list_tenants", "get_features", "get_configuration"},
@@ -24,7 +24,7 @@ class ResourceTools:
     async def call(self, resource: str, name: str, arguments: dict[str, Any]) -> Any:
         url, token = self.endpoints[resource]
         try:
-            if name not in MCP_READ_TOOLS[resource]:
+            if name not in ALLOWED_MCP_TOOLS[resource]:
                 raise ValueError("Tool is not allowed")
             async with (
                 asyncio.timeout(15),

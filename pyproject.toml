@@ -19,7 +19,7 @@ dependencies = [
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"
 testpaths = ["tests", "teams", "agents"]
-pythonpath = [".", "teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "agents/support_agent/src", "agents/debug_agent/src"]
+pythonpath = [".", "teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "agents/support_agent/src", "agents/debug_agent/src", "agents/resolver_agent/src"]
 markers = ["integration: requires the Compose resource stack"]
 
 [tool.ruff]
@@ -35,4 +35,4 @@ typeCheckingMode = "standard"
 venvPath = "."
 venv = ".venv"
 include = ["teams", "agents", "scripts", "tests", "conftest.py"]
-extraPaths = ["teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "agents/support_agent/src", "agents/debug_agent/src"]
+extraPaths = ["teams/docs/docs_mcp/src", "teams/support/requests_mcp/src", "teams/backend/service_mcp/src", "teams/backend/service_api/src", "agents/support_agent/src", "agents/debug_agent/src", "agents/resolver_agent/src"]
